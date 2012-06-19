@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<model name="ks:taskModel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+
+	<imports>
+		<import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d" />
+		<import uri="http://www.alfresco.org/model/bpm/1.0" prefix="bpm" />
+	</imports>
+
+	<namespaces>
+		<namespace uri="http://www.alfresco.org/model/kickstart/1.0" prefix="ks" />
+	</namespaces>
+
+	<types>
+
+		<type name="ks:testTask">
+			<parent>bpm:startTask</parent>
+<!-- 			<mandatory-aspects>
+				<aspect>bpm:assignee</aspect>
+			</mandatory-aspects> -->
+		</type>
+
+	</types>
+</model>
+      

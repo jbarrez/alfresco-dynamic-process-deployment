@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions targetNamespace="adhoc" 
+   xmlns:ns2="http://www.signavio.com" 
+   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+   xmlns:ns4="http://www.omg.org/spec/DD/20100524/DI" 
+   xmlns:ns3="http://activiti.org/bpmn" 
+   xmlns:ns5="http://www.omg.org/spec/DD/20100524/DC" 
+   xmlns:ns6="http://www.omg.org/spec/BPMN/20100524/DI">
+   
+<process isExecutable="true" name="Kickstart test process v2" id="kickstart_test">
+
+    <documentation id="adhoc_Test-process_documentation"></documentation>
+    
+    <startEvent ns3:initiator="initiator" id="theStart" ns3:formKey="wf:submitAdhocTask"/>
+    <sequenceFlow targetRef="task_1" sourceRef="theStart" id="flow_1"/>
+    
+    <userTask name="A" id="task_1" ns3:formKey="ks:testTask" ns3:assignee="${bpm_assignee.properties.userName}">
+    	<documentation id="task_1_documentation"></documentation>
+    </userTask>
+    <sequenceFlow targetRef="theEnd" sourceRef="task_1" id="flow_4"/>
+    
+    <endEvent id="theEnd"/></process>
+    
+    <ns6:BPMNDiagram id="Test-process_diagram">
+    	<ns6:BPMNPlane bpmnElement="kickstart_test" id="Test-process_plane"/>
+    </ns6:BPMNDiagram>
+    
+</definitions>

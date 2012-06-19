@@ -1,0 +1,32 @@
+
+<module>
+	<id>test_form</id>
+	<auto-deploy>true</auto-deploy>
+	
+	<evaluator type="task-type" />
+	
+	<configurations>
+		<config evaluator="task-type" condition="ks:testTask" replace="true">
+			<forms>
+				<form>
+					<field-visibility>
+						<show id="message" />
+						<show id="bpm:dueDate" />
+					</field-visibility>
+					<appearance>
+						<set id="" appearance="title" label-id="workflow.set.general" />
+						<set id="info" appearance=""
+							template="/org/alfresco/components/form/2-column-set.ftl" />
+
+						<field id="message" label-id="workflow.field.message">
+							<control template="/org/alfresco/components/form/controls/info.ftl" />
+						</field>
+
+						<field id="bpm:dueDate" label-id="workflow.field.due" set="info" />
+
+					</appearance>
+				</form>
+			</forms>
+		</config>
+	</configurations>
+</module>

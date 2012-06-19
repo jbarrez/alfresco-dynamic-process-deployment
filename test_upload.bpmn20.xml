@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions targetNamespace="adhoc" xmlns:ns2="http://www.signavio.com"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns4="http://www.omg.org/spec/DD/20100524/DI"
+	xmlns:ns3="http://activiti.org/bpmn" xmlns:ns5="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns:ns6="http://www.omg.org/spec/BPMN/20100524/DI">
+	<process isExecutable="true" name="Deploy_to_alfresco" id="adhoc_Deploy_to_alfresco">
+		<documentation id="adhoc_Deploy_to_alfresco_documentation"></documentation>
+		<startEvent ns3:initiator="initiator" id="theStart" />
+		<sequenceFlow targetRef="parallel_gateway_fork_1"
+			sourceRef="theStart" id="flow_1" />
+		<parallelGateway id="parallel_gateway_fork_1" />
+		<sequenceFlow targetRef="task_1" sourceRef="parallel_gateway_fork_1"
+			id="flow_2" />
+		<sequenceFlow targetRef="parallel_gateway_join2"
+			sourceRef="task_1" id="flow_3" />
+		<userTask name="A" id="task_1">
+			<documentation id="task_1_documentation"></documentation>
+		</userTask>
+		<sequenceFlow targetRef="task_2" sourceRef="parallel_gateway_fork_1"
+			id="flow_4" />
+		<sequenceFlow targetRef="parallel_gateway_join2"
+			sourceRef="task_2" id="flow_5" />
+		<userTask name="my task" id="task_2">
+			<documentation id="task_2_documentation"></documentation>
+		</userTask>
+		<parallelGateway id="parallel_gateway_join2" />
+		<sequenceFlow targetRef="task_3" sourceRef="parallel_gateway_join2"
+			id="flow_6" />
+		<userTask name="my task" id="task_3">
+			<documentation id="task_3_documentation"></documentation>
+		</userTask>
+		<endEvent id="theEnd" />
+		<sequenceFlow targetRef="theEnd" sourceRef="task_3" id="flow_7" />
+	</process>
+	<ns6:BPMNDiagram id="Deploy_to_alfresco_diagram">
+		<ns6:BPMNPlane bpmnElement="adhoc_Deploy_to_alfresco"
+			id="Deploy_to_alfresco_plane" />
+	</ns6:BPMNDiagram>
+</definitions>
