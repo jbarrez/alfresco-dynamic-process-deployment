@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	targetNamespace="adhoc" xmlns:ns2="http://www.signavio.com"
+	xmlns:ns4="http://www.omg.org/spec/DD/20100524/DI" xmlns:ns3="http://activiti.org/bpmn"
+	xmlns:ns5="http://www.omg.org/spec/DD/20100524/DC" xmlns:ns6="http://www.omg.org/spec/BPMN/20100524/DI">
+	<process isExecutable="true" name="test_workflow" id="kickstart_test_workflow">
+		<documentation id="adhoc_test_workflow_documentation" />
+		<startEvent ns3:formKey="wf:submitAdhocTask"
+			ns3:initiator="initiator" id="theStart" />
+		<sequenceFlow targetRef="task_1" sourceRef="theStart" id="flow_1" />
+		<userTask ns3:formKey="ks:a"
+			name="Step 1" id="task_1">
+			<documentation id="task_1_documentation">This is step 1</documentation>
+			<extensionElements>
+				<ns3:formProperty required="false" type="string"
+					name="Field A" id="Field A" />
+				<ns3:formProperty required="false" type="string"
+					name="Field B" id="Field B" />
+			</extensionElements>
+			<humanPerformer
+				id="sid-550c0eea-2849-4e2d-a7a6-b20729538769_humanPerformer">
+				<resourceAssignmentExpression
+					id="sid-550c0eea-2849-4e2d-a7a6-b20729538769_humanPerformer_assignmentExpression">
+					<formalExpression
+						id="sid-550c0eea-2849-4e2d-a7a6-b20729538769_humanPerformer_formalExpressions">admin</formalExpression>
+				</resourceAssignmentExpression>
+			</humanPerformer>
+		</userTask>
+		<sequenceFlow targetRef="task_2" sourceRef="task_1" id="flow_2" />
+		<userTask ns3:formKey="ks:b"
+			name="Step 2" id="task_2">
+			<documentation id="task_2_documentation">This is step 2</documentation>
+			<extensionElements>
+				<ns3:formProperty required="false" type="string"
+					name="Field C" id="Field C" />
+			</extensionElements>
+			<humanPerformer
+				id="sid-9cf6ef0c-daf2-4f5a-921b-18d15b4062a9_humanPerformer">
+				<resourceAssignmentExpression
+					id="sid-9cf6ef0c-daf2-4f5a-921b-18d15b4062a9_humanPerformer_assignmentExpression">
+					<formalExpression
+						id="sid-9cf6ef0c-daf2-4f5a-921b-18d15b4062a9_humanPerformer_formalExpressions">admin</formalExpression>
+				</resourceAssignmentExpression>
+			</humanPerformer>
+		</userTask>
+		<endEvent id="theEnd" />
+		<sequenceFlow targetRef="theEnd" sourceRef="task_2" id="flow_3" />
+	</process>
+	<ns6:BPMNDiagram id="test_workflow_diagram">
+		<ns6:BPMNPlane bpmnElement="kickstart_test_workflow" id="test_workflow_plane" />
+	</ns6:BPMNDiagram>
+</definitions>
+
+<!-- <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions targetNamespace="adhoc" 
+   xmlns:ns2="http://www.signavio.com" 
+   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+   xmlns:ns4="http://www.omg.org/spec/DD/20100524/DI" 
+   xmlns:ns3="http://activiti.org/bpmn" 
+   xmlns:ns5="http://www.omg.org/spec/DD/20100524/DC" 
+   xmlns:ns6="http://www.omg.org/spec/BPMN/20100524/DI">
+   
+<process isExecutable="true" name="Kickstart test process v3" id="kickstart_test">
+
+    <documentation id="adhoc_Test-process_documentation"></documentation>
+    
+    <startEvent ns3:initiator="initiator" id="theStart" ns3:formKey="wf:submitAdhocTask"/>
+    <sequenceFlow targetRef="task_1" sourceRef="theStart" id="flow_1"/>
+    
+    <userTask name="A" id="task_1" ns3:formKey="ks:testTask" ns3:assignee="${bpm_assignee.properties.userName}">
+    	<documentation id="task_1_documentation"></documentation>
+    </userTask>
+    <sequenceFlow targetRef="theEnd" sourceRef="task_1" id="flow_4"/>
+    
+    <endEvent id="theEnd"/></process>
+    
+    <ns6:BPMNDiagram id="Test-process_diagram">
+    	<ns6:BPMNPlane bpmnElement="kickstart_test" id="Test-process_plane"/>
+    </ns6:BPMNDiagram>
+    
+</definitions>
+ -->

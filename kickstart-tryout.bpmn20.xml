@@ -7,7 +7,7 @@
    xmlns:ns5="http://www.omg.org/spec/DD/20100524/DC" 
    xmlns:ns6="http://www.omg.org/spec/BPMN/20100524/DI">
    
-<process isExecutable="true" name="Kickstart test process v2" id="kickstart_test">
+<process isExecutable="true" name="Kickstart test process v3" id="kickstart_test">
 
     <documentation id="adhoc_Test-process_documentation"></documentation>
     

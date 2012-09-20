@@ -1,6 +1,7 @@
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,13 +21,18 @@ import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
+import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONObject;
 
 
 
@@ -71,17 +77,15 @@ public class TestUploadProcess {
 			}
 		}
 		
+		String processFileName = "test_process.bpmn20.xml";
 		
 		HashMap<String, Object> properties = new HashMap<String, Object>();
-		properties.put("cmis:name", "test_upload.bpmn20.xml");
+		properties.put("cmis:name", processFileName);
 		properties.put("cmis:objectTypeId", "D:bpm:workflowDefinition");
 		properties.put("bpm:definitionDeployed", true);
 		properties.put("bpm:engineId", "activiti");
 		
-		FileInputStream fis = new FileInputStream("kickstart-tryout.bpmn20.xml");
-		
-		 ContentStream contentStream = new ContentStreamImpl("test_upload.bpmn20.xml", null,
-		            "application/xml",fis);
+	    ContentStream contentStream = new ContentStreamImpl(processFileName, null, "application/xml", TestUploadProcess.class.getResourceAsStream(processFileName));
 		
 		
 		Document document = workflowDefinitionFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
@@ -122,44 +126,53 @@ public class TestUploadProcess {
 			}
 		}
 		
+		String taskModelFile = "test_process_task_model.xml";
+		
 		HashMap<String, Object> properties = new HashMap<String, Object>();
-		properties.put("cmis:name", "task_model.xml");
+		properties.put("cmis:name", taskModelFile);
 		properties.put("cmis:objectTypeId", "D:cm:dictionaryModel");
 		properties.put("cm:modelActive", true);
 		
-		FileInputStream fis = new FileInputStream("task-model.xml");
-		
-		 ContentStream contentStream = new ContentStreamImpl("task-model.xml", null,
-		            "application/xml",fis);
+		ContentStream contentStream = new ContentStreamImpl(taskModelFile, null, "application/xml", TestUploadProcess.class.getResourceAsStream(taskModelFile));
 		
 		
 		Document document = modelFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
 		System.out.println(document.getName());
 	}
 	
-	private static void deployForm() {
+	private static void deployForm() throws Exception {
 		HttpState state = new HttpState();
 		state.setCredentials(new AuthScope(null, AuthScope.ANY_PORT), new UsernamePasswordCredentials("admin", "admin"));
 		
+		String formConfigFileName = "test_process_form_config.xml";
+		
 		PostMethod postMethod = new PostMethod("http://localhost:8081/share/page/modules/module");
+		
+//		HttpState state = new HttpState();
+//		state.addCookies(getAuthenticationCookies("admin", "admin"));
+		
+//		String ticket = getAuthenticationTicket("admin", "admin");
+//		HttpState state = applyTicketToMethod(postMethod, ticket);
 		
 		 try
 	        {
 	            
-			 String formConfig = FileUtils.readFileToString(new File("test-form-config.xml"));
+			 String formConfig = FileUtils.readFileToString(new File(TestUploadProcess.class.getResource(formConfigFileName).toURI()));
 			 postMethod.setRequestEntity(new StringRequestEntity(formConfig, "application/xml", "UTF-8"));
-			 
 			 
 //			 postMethod.setRequestHeader("Content-type", "text/xml");
 	         HttpClient httpClient = new HttpClient();
 	         int result = httpClient.executeMethod(null, postMethod, state);
 	         
 	           // Display status code
-	            System.out.println("Response status code: " + result);
+	          System.out.println("Response status code: " + result);
 	            
-	            // Display response
+	          if (result != 200)
+	          {
 	            System.out.println("Response body: ");
-	            System.out.println(postMethod.getResponseBodyAsString());
+	            System.out.println(postMethod.getResponseBodyAsString());	        	  
+	          }
+	            
 	        }
 	        catch(Throwable t)
 	        {
@@ -171,5 +184,130 @@ public class TestUploadProcess {
 	            postMethod.releaseConnection();
 	        }
 	}
+	
+//	private static String getAuthenticationTicket(String userName, String password) throws Exception { 
+//		PostMethod loginMethod = null;
+//		try
+//		{
+////			loginMethod = new PostMethod("http://localhost:8080/alfresco/service/api/login");
+//			loginMethod = new PostMethod("http://localhost:8081/share/page/dologin");
+//			loginMethod.setRequestHeader("Accept", "application/json");
+//
+//			// Populate resuest body
+//			JSONObject requestBody = new JSONObject();
+//			requestBody.put("username", userName);
+//			requestBody.put("password", password);
+//			
+//			try {
+//				loginMethod.setRequestEntity(new StringRequestEntity(requestBody.toJSONString(), "application/json", "UTF-8"));
+//			} catch (UnsupportedEncodingException error) {
+//				throw new RuntimeException("All hell broke loose, a JVM that doesn't have UTF-8 encoding...");
+//			}
+//		 
+//			HttpClient client = new HttpClient();
+//		 
+//			// Since no authentication info is available yet, no need to use a
+//			// custom HostConfiguration for the login-call
+//			client.executeMethod(loginMethod);
+//
+//			if(loginMethod.getStatusCode() == HttpStatus.SC_OK)
+//			{
+//				// Extract the ticket
+//				JSONObject data = JSONUtil.getDataFromResponse(loginMethod);
+//				if(data == null)
+//				{
+//					throw new RuntimeException("Failed to login to Alfresco with user " + userName + " (No JSON-data found in response)");
+//				}
+//
+//				// Extract the actual ticket
+//				String ticket = JSONUtil.getString(data, "ticket", null);
+//				if(ticket == null)
+//				{
+//					throw new RuntimeException("Failed to login to Alfresco with user " + userName + "(No ticket found in JSON-response)");
+//				}
+//				return ticket;
+//			}
+//			else
+//			{
+//				// Unable to login
+//				throw new RuntimeException("Failed to login to Alfresco with user " + userName + " (" + loginMethod.getStatusCode() + loginMethod.getStatusLine().getReasonPhrase() + ")");
+//			}
+//		} catch (IOException ioe) {
+//			// Something went wrong when sending request
+//			throw new RuntimeException("Failed to login to Alfresco with user " + userName, ioe);
+//		}
+//		finally
+//		{
+//			if(loginMethod != null)
+//			{
+//				try
+//				{
+//					loginMethod.releaseConnection();
+//				}
+//				catch(Throwable t)
+//				{
+//					// Ignore this to prevent swallowing potential original exception
+//				}
+//			}
+//		}
+//	}
+	
+	private static Cookie[] getAuthenticationCookies(String userName, String password) throws Exception { 
+		PostMethod loginMethod = null;
+		try
+		{
+			loginMethod = new PostMethod("http://localhost:8081/share/page/dologin");
+			
+			try {
+				
+				loginMethod.addRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				loginMethod.setRequestEntity(new StringRequestEntity("username=admin&password=admin", "text/plain", "UTF-8"));
+			} catch (UnsupportedEncodingException error) {
+				throw new RuntimeException("All hell broke loose, a JVM that doesn't have UTF-8 encoding...");
+			}
+		 
+			HttpState state = new HttpState();
+			HttpClient client = new HttpClient();
+		 
+			// Since no authentication info is available yet, no need to use a
+			// custom HostConfiguration for the login-call
+			client.executeMethod(null, loginMethod, state);
+
+			Cookie[] cookies = state.getCookies();
+			System.out.println("Found " + cookies.length + " cookies");
+			
+			System.out.println("Response body: " + loginMethod.getResponseBodyAsString());
+			
+			return cookies;
+			
+		} catch (IOException ioe) {
+			// Something went wrong when sending request
+			throw new RuntimeException("Failed to login to Alfresco with user " + userName, ioe);
+		}
+		finally
+		{
+			if(loginMethod != null)
+			{
+				try
+				{
+					loginMethod.releaseConnection();
+				}
+				catch(Throwable t)
+				{
+					// Ignore this to prevent swallowing potential original exception
+				}
+			}
+		}
+	}
+
+	private static HttpState applyTicketToMethod(HttpMethod method, String ticket) throws URIException
+	{
+		// POST and PUT methods don't support Query-params, use Basic Authentication to pass
+		// in the ticket (ROLE_TICKET) for all methods.
+		HttpState state = new HttpState();
+		state.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("ROLE_TICKET", ticket));
+		return state;
+	}
+
 
 }
